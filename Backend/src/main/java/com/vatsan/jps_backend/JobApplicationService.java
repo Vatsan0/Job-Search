@@ -31,4 +31,5 @@ public class JobApplicationService {
         jobApplicationRepository.save(application);
         return application;
     }
+    
 }

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
 import Creatable from "react-select/creatable";
-
 import { skillOptions, qualificationOptions } from "../../data/constants";
 import { useSelector } from "react-redux";
+import api from "../../api/axiosConfig"; // Assuming this is the correct API instance
 
 const JobApplication = ({ isOpen, onClose, job, applyForJob }) => {
   const userData = useSelector((state) => state.auth.userData);
@@ -18,16 +18,32 @@ const JobApplication = ({ isOpen, onClose, job, applyForJob }) => {
     resumeLink: "",
   });
 
-  useEffect(() => {
-    setApplicationForm({
-      ...applicationForm,
-      name: userData?.name,
-      email: userData?.email,
-      skills: userData?.skills?.map((item) => ({ value: item, label: item })),
-    });
-  }, [userData]);
-
   const [isLoading, setIsLoading] = useState(false);
+  const [isAlreadyApplied, setIsAlreadyApplied] = useState(false); // Track if the user has already applied
+
+  useEffect(() => {
+    if (isOpen && job) {
+      setApplicationForm({
+        ...applicationForm,
+        name: userData?.name,
+        email: userData?.email,
+        skills: userData?.skills?.map((item) => ({ value: item, label: item })),
+      });
+      
+      // Check if the user has already applied for this job
+      const checkUserApplication = async () => {
+        try {
+          const response = await api.get(`/api/v1/applications/user/${userData?.email}`);
+          const alreadyApplied = response.data.some((application) => application.jobId === job?.id);
+          setIsAlreadyApplied(alreadyApplied);
+        } catch (error) {
+          console.error("Error checking application status", error);
+        }
+      };
+
+      checkUserApplication();
+    }
+  }, [isOpen, job, userData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -88,6 +104,10 @@ const JobApplication = ({ isOpen, onClose, job, applyForJob }) => {
         <div className="mt-8 mb-16">
           <p>{job?.description}</p>
         </div>
+
+        {isAlreadyApplied && (
+          <p className="text-red-500 text-lg text-center">You have already applied for this job!</p>
+        )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           <h2 className="text-lg font-bold text-center">Apply for this job</h2>
@@ -179,7 +199,7 @@ const JobApplication = ({ isOpen, onClose, job, applyForJob }) => {
 
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || isAlreadyApplied} // Disable button if already applied or loading
             className={`py-2 px-4 bg-green-500 hover:opacity-70 rounded-lg text-white text-lg font-semibold transition-opacity ${
               isLoading && "opacity-30 hover:opacity-40"
             }`}

@@ -21,16 +21,12 @@ public class Recruiter {
     private String name;
     private String email;
     private String password;
-    private String company;
-    private String location;
     private List<ObjectId> jobIds;
 
-    public Recruiter(String name, String email, String password, String company, String location, List<ObjectId> jobIds) {
+    public Recruiter(String name, String email, String password, List<ObjectId> jobIds) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.company = company;
-        this.location = location;
         this.jobIds = jobIds;
     }
 

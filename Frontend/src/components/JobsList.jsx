@@ -72,7 +72,7 @@ const JobsList = ({
               ))}
             </div>
 
-            {isRecruiter && userData.jobIds.includes(job.id) ? (
+            {isRecruiter && userData?.jobIds?.includes(job.id) ? (
               <div>
                 <button
                   onClick={() => handleDeleteClick(job)}

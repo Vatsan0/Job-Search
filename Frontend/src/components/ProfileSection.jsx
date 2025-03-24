@@ -20,8 +20,9 @@ const ProfileSection = () => {
   const renderRecruiterSection = () => (
     <div className="my-3">
       <h3>
-        Recruiter @ <span className="font-semibold">{userData.company}</span>
-        <span className="ml-3 opacity-80 text-sm">{userData.location}</span>
+        Recruiter<span className="font-semibold"></span>
+        <br />
+        <span className="opacity-80 text-sm">{userData.location}</span>
       </h3>
     </div>
   );
@@ -41,7 +42,7 @@ const ProfileSection = () => {
         {isRecruiter ? renderRecruiterSection() : renderSkillsSection()}
       </div>
     </div>
-  );
+  );  
 };
 
 export default ProfileSection;
