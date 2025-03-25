@@ -302,7 +302,8 @@ const ApplicationsSection = () => {
               <p className="my-10 text-lg font-semibold">Loading...</p>
             </div>
           ) : applications.length > 0 ? (
-            applications.map((item) => (
+            applications.filter((item) => item.position)
+            .map((item) => (
               <div
                 key={item.id}
                 className="flex justify-between items-center py-3 px-4"

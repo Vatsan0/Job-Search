@@ -28,8 +28,6 @@ public class Recruiter {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.company = company;
-        this.location = location;
         this.jobIds = (jobIds != null) ? jobIds : new ArrayList<>();
     }
 

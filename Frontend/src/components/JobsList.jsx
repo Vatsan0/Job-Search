@@ -34,6 +34,9 @@ const JobsList = ({
 
   const handleDeleteClick = (job) => {
     onDelete(job);
+    const updatedAppliedJobs = appliedJobs.filter((id) => id !== job.id);
+    setAppliedJobs(updatedAppliedJobs);
+    localStorage.setItem("appliedJobs", JSON.stringify(updatedAppliedJobs));
   };
 
   return (
