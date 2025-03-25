@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -15,6 +15,9 @@ const JobsList = ({
   const isRecruiter = useSelector((state) => state.auth.isRecruiter);
   const userData = useSelector((state) => state.auth.userData);
 
+  const [appliedJobs, setAppliedJobs] = useState(() => {
+    return JSON.parse(localStorage.getItem("appliedJobs")) || [];
+  });
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/");
@@ -23,6 +26,9 @@ const JobsList = ({
 
   const handleApplyClick = (job) => {
     setSelectedJob(job);
+    const updatedAppliedJobs = [...appliedJobs, job.id];
+    setAppliedJobs(updatedAppliedJobs);
+    localStorage.setItem("appliedJobs", JSON.stringify(updatedAppliedJobs));
     onApply();
   };
 
@@ -71,7 +77,6 @@ const JobsList = ({
                 </span>
               ))}
             </div>
-
             {isRecruiter && userData?.jobIds?.includes(job.id) ? (
               <div>
                 <button
@@ -82,6 +87,15 @@ const JobsList = ({
                   }`}
                 >
                   Delete
+                </button>
+              </div>
+            ) : !isRecruiter && (appliedJobs?.includes(job.id) ?? false) ? (
+              <div>
+                <button
+                  disabled
+                  className="py-4 px-8 bg-gray-500 cursor-not-allowed rounded-lg text-white text-lg font-semibold"
+                >
+                  Applied
                 </button>
               </div>
             ) : (

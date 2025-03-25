@@ -8,6 +8,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +28,9 @@ public class Recruiter {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.jobIds = jobIds;
+        this.company = company;
+        this.location = location;
+        this.jobIds = (jobIds != null) ? jobIds : new ArrayList<>();
     }
 
     public String getEmail() {
@@ -57,6 +60,9 @@ public class Recruiter {
     }
 
     public void addJobId(ObjectId jobId) {
+        if (this.jobIds == null) {
+            this.jobIds = new ArrayList<>();
+        }
         this.jobIds.add(jobId);
     }
 
