@@ -16,7 +16,11 @@ const JobsList = ({
   const userData = useSelector((state) => state.auth.userData);
 
   const [appliedJobs, setAppliedJobs] = useState(() => {
-    return JSON.parse(localStorage.getItem("appliedJobs")) || [];
+    const userId = userData?.id;
+    if (!userId) return [];
+  
+    const storedJobs = JSON.parse(localStorage.getItem("appliedJobs")) || {};
+    return storedJobs[userId] || [];
   });
   useEffect(() => {
     if (!isAuthenticated) {
@@ -26,17 +30,36 @@ const JobsList = ({
 
   const handleApplyClick = (job) => {
     setSelectedJob(job);
-    const updatedAppliedJobs = [...appliedJobs, job.id];
+  
+    const userId = userData?.id;
+    if (!userId) return; 
+    const storedJobs = JSON.parse(localStorage.getItem("appliedJobs")) || {};
+    
+    const userAppliedJobs = storedJobs[userId] || [];
+
+    const updatedAppliedJobs = [...userAppliedJobs, job.id];
+  
+    storedJobs[userId] = updatedAppliedJobs;
+    localStorage.setItem("appliedJobs", JSON.stringify(storedJobs));
+  
     setAppliedJobs(updatedAppliedJobs);
-    localStorage.setItem("appliedJobs", JSON.stringify(updatedAppliedJobs));
     onApply();
   };
 
   const handleDeleteClick = (job) => {
     onDelete(job);
-    const updatedAppliedJobs = appliedJobs.filter((id) => id !== job.id);
+  
+    const userId = userData?.id;
+    if (!userId) return;
+  
+    const storedJobs = JSON.parse(localStorage.getItem("appliedJobs")) || {};
+    
+    const updatedAppliedJobs = (storedJobs[userId] || []).filter((id) => id !== job.id);
+  
+    storedJobs[userId] = updatedAppliedJobs;
+    localStorage.setItem("appliedJobs", JSON.stringify(storedJobs));
+  
     setAppliedJobs(updatedAppliedJobs);
-    localStorage.setItem("appliedJobs", JSON.stringify(updatedAppliedJobs));
   };
 
   return (
